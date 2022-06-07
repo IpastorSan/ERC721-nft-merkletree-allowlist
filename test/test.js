@@ -3,7 +3,7 @@ const { expect } = require("chai");
 const linkToken = require("../artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20")
 
 
-describe("NFT contract creation, NFT minting, whitelist minting, royalties, reward pool, withdraw,", () => {
+describe("NFT contract creation, NFT minting, allowlist minting, royalties, reward pool, withdraw,", () => {
   let nftFactory;
   let nft;
   let owner;
@@ -93,25 +93,25 @@ describe("NFT contract creation, NFT minting, whitelist minting, royalties, rewa
     })
   })
 
-  describe("Whitelist Sale with whitelist NOT open", () => {
+  describe("allowlist Sale with allowlist NOT open", () => {
     let aliceProof = ["0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c94","0x1ebaa930b8e9130423c183bf38b0564b0103180b7dad301013b18e59880541ae","0x26cb158cf4ecb18683907b73c29e42576312db276de44d66ecfa72a69edc45d2","0xb6af7bc58d7cb770b7b2a0b3e85aae4cce2ac46139c0f9d263c2698e32efc8c8"]
 
-    it(`Should fail to whitelist mint with reason Whitelist not open`, async () => {
-     await expect(nft.whitelistMint(1, aliceProof)).to.be.revertedWith("Whitelist sale is not Open")
+    it(`Should fail to allowlist mint with reason allowlist not open`, async () => {
+     await expect(nft.allowlistMint(1, aliceProof)).to.be.revertedWith("allowlist sale is not Open")
     })
 
-    it("Should open whitelist and then fail to try to open it again", async () => {
-      await nft.openWhitelistSale()
-      await expect (nft.openWhitelistSale()).to.be.revertedWith("Whitelist Sale is already Open!")
+    it("Should open allowlist and then fail to try to open it again", async () => {
+      await nft.openallowlistSale()
+      await expect (nft.openallowlistSale()).to.be.revertedWith("allowlist Sale is already Open!")
     })
 
-    it("Should try to open whitelist sale without being owner", async () => {
-      await expect (nft.connect(aliceAccount).openWhitelistSale()).to.be.revertedWith("Ownable: caller is not the owner")
+    it("Should try to open allowlist sale without being owner", async () => {
+      await expect (nft.connect(aliceAccount).openallowlistSale()).to.be.revertedWith("Ownable: caller is not the owner")
     })
 
   })
 
-  describe("Whitelist Sale", () => {
+  describe("allowlist Sale", () => {
     let ownerProof = ["0x5c4a1afe01494e8514ae2a01ae4d9e6ceb2839e29f0b727832f936c96a597d7f","0xfa820a421a73532a4f7f1b072c73674692fe3d1d758a3320bdf06aad2d2a3af8","0x299933cac28b9df1ae6dbf7f5d9814b5fe409a67795ed15dea6135b5fe78c6e3","0xb6af7bc58d7cb770b7b2a0b3e85aae4cce2ac46139c0f9d263c2698e32efc8c8"]
     let aliceProof = ["0x8a3552d60a98e0ade765adddad0a2e420ca9b1eef5f326ba7ab860bb4ea72c94","0x1ebaa930b8e9130423c183bf38b0564b0103180b7dad301013b18e59880541ae","0x26cb158cf4ecb18683907b73c29e42576312db276de44d66ecfa72a69edc45d2","0xb6af7bc58d7cb770b7b2a0b3e85aae4cce2ac46139c0f9d263c2698e32efc8c8"]
     let bobProof = ["0x00314e565e0574cb412563df634608d76f5c59d9f817e85966100ec1d48005c0","0x1ebaa930b8e9130423c183bf38b0564b0103180b7dad301013b18e59880541ae","0x26cb158cf4ecb18683907b73c29e42576312db276de44d66ecfa72a69edc45d2","0xb6af7bc58d7cb770b7b2a0b3e85aae4cce2ac46139c0f9d263c2698e32efc8c8"]
@@ -119,39 +119,39 @@ describe("NFT contract creation, NFT minting, whitelist minting, royalties, rewa
     let ineProof = []
     
     beforeEach(async () => {
-      await nft.openWhitelistSale();
+      await nft.openallowlistSale();
     })
 
-   it("Should allow whitelisted user (not owner) to mint 1 token with exact price", async () => {
-    await nft.connect(aliceAccount).whitelistMint(1, aliceProof, {value: ethers.utils.parseEther("0.001")})
+   it("Should allow allowlisted user (not owner) to mint 1 token with exact price", async () => {
+    await nft.connect(aliceAccount).allowlistMint(1, aliceProof, {value: ethers.utils.parseEther("0.001")})
     expect(await nft.balanceOf(alice)).to.be.equal(1)
    })
 
-   it("Should allow whitelisted user (not owner) to mint 2 tokens with exact price", async () => {
-    await nft.connect(carolAccount).whitelistMint(2, carolProof, {value: ethers.utils.parseEther("0.002")})
+   it("Should allow allowlisted user (not owner) to mint 2 tokens with exact price", async () => {
+    await nft.connect(carolAccount).allowlistMint(2, carolProof, {value: ethers.utils.parseEther("0.002")})
     expect(await nft.balanceOf(carol)).to.be.equal(2)
   })
 
-   it("Should fail to allow NON whitelisted user to mint 1 token with exact price", async () => {
-    await expect(nft.connect(ineAccount).whitelistMint(1, ineProof, {value: ethers.utils.parseEther("0.001")})).to.be.revertedWith("Invalid Proof")
+   it("Should fail to allow NON allowlisted user to mint 1 token with exact price", async () => {
+    await expect(nft.connect(ineAccount).allowlistMint(1, ineProof, {value: ethers.utils.parseEther("0.001")})).to.be.revertedWith("Invalid Proof")
   
   })
 
-   it("Should fail to allow whitelisted user to mint twice 1 token with exact price. Whitelist mint already claimed", async () => {
-    await nft.connect(aliceAccount).whitelistMint(1, aliceProof, {value: ethers.utils.parseEther("0.001")})
-    await expect(nft.connect(aliceAccount).whitelistMint(1, aliceProof, {value: ethers.utils.parseEther("0.001")})).to.be.revertedWith("Address has already claimed NFT")
+   it("Should fail to allow allowlisted user to mint twice 1 token with exact price. allowlist mint already claimed", async () => {
+    await nft.connect(aliceAccount).allowlistMint(1, aliceProof, {value: ethers.utils.parseEther("0.001")})
+    await expect(nft.connect(aliceAccount).allowlistMint(1, aliceProof, {value: ethers.utils.parseEther("0.001")})).to.be.revertedWith("Address has already claimed NFT")
   })
 
-   it("Should fail to allow whitelisted user to mint more than the max amount of tokens per address", async () => {
-    await expect(nft.connect(aliceAccount).whitelistMint(6, aliceProof, {value: ethers.utils.parseEther("0.006")})).to.be.revertedWith("Cannot mint specified number of NFTs.")
+   it("Should fail to allow allowlisted user to mint more than the max amount of tokens per address", async () => {
+    await expect(nft.connect(aliceAccount).allowlistMint(6, aliceProof, {value: ethers.utils.parseEther("0.006")})).to.be.revertedWith("Cannot mint specified number of NFTs.")
    })
 
-   it("Should fail to allow whitelisted user to mint if not enought ether sent", async () => {
-    await expect(nft.connect(aliceAccount).whitelistMint(2, aliceProof, {value: ethers.utils.parseEther("0.001")})).to.be.revertedWith("Not enough/too much ether sent")
+   it("Should fail to allow allowlisted user to mint if not enought ether sent", async () => {
+    await expect(nft.connect(aliceAccount).allowlistMint(2, aliceProof, {value: ethers.utils.parseEther("0.001")})).to.be.revertedWith("Not enough/too much ether sent")
    })
 
-   it("Should fail to allow whitelisted user to mint if more ether sent than necessary", async () => {
-    await expect(nft.connect(aliceAccount).whitelistMint(1, aliceProof, {value: ethers.utils.parseEther("0.002")})).to.be.revertedWith("Not enough/too much ether sent")
+   it("Should fail to allow allowlisted user to mint if more ether sent than necessary", async () => {
+    await expect(nft.connect(aliceAccount).allowlistMint(1, aliceProof, {value: ethers.utils.parseEther("0.002")})).to.be.revertedWith("Not enough/too much ether sent")
    })
 
   })

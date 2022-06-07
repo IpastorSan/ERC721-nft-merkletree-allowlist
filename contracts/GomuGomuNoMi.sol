@@ -13,11 +13,11 @@ import './royalties/ContractRoyalties.sol';
 contract GomuGomuNoMi is ERC721, Ownable, ERC2981ContractRoyalties {
     using Counters for Counters.Counter;
 
-    //merkle root used for whitelist minting
+    //merkle root used for allowlist minting
     bytes32 public merkleRoot = 0x9bc0fe0a813ddaa9ab51586699dbbd5ac692f11624ef91a3e3439fb44755933b;
-    //mapping of already claimed whitelist addreeses
-    mapping(address => bool) public whitelistClaimed;
-    bool private whitelistIsOpen =false;
+    //mapping of already claimed allowlist addreeses
+    mapping(address => bool) public allowlistClaimed;
+    bool private allowlistIsOpen =false;
 
     //Interface for royalties
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
@@ -73,9 +73,9 @@ contract GomuGomuNoMi is ERC721, Ownable, ERC2981ContractRoyalties {
         merkleRoot = _newMerkleRoot;
     }
 
-    function openWhitelistSale() external onlyOwner {
-        require(whitelistIsOpen == false, 'Whitelist Sale is already Open!');
-        whitelistIsOpen = true;
+    function openallowlistSale() external onlyOwner {
+        require(allowlistIsOpen == false, 'allowlist Sale is already Open!');
+        allowlistIsOpen = true;
     }
 
     function mintNFTs(uint256 _number) public callerIsUser payable {
@@ -104,12 +104,12 @@ contract GomuGomuNoMi is ERC721, Ownable, ERC2981ContractRoyalties {
 
     }
 
-        function whitelistMint(uint256 _number, bytes32[] calldata _merkleProof) external payable callerIsUser{
+        function allowlistMint(uint256 _number, bytes32[] calldata _merkleProof) external payable callerIsUser{
         uint256 totalMinted = _tokenIds.current();
         
         //basic validation. Wallet has not already claimed
-        require(whitelistIsOpen == true, "Whitelist sale is not Open");
-        require(!whitelistClaimed[msg.sender], "Address has already claimed NFT");
+        require(allowlistIsOpen == true, "allowlist sale is not Open");
+        require(!allowlistClaimed[msg.sender], "Address has already claimed NFT");
         require(totalMinted + _number < MAX_SUPPLY, "Not enough NFTs left to mint..");
         require(_number > 0 && _number < MAX_PER_MINT, "Cannot mint specified number of NFTs.");
         require(mintsPerAddress[msg.sender] < MAX_PER_WALLET, "Cannot mint more than 5 NFTs per wallet");
@@ -120,7 +120,7 @@ contract GomuGomuNoMi is ERC721, Ownable, ERC2981ContractRoyalties {
         require(MerkleProof.verify(_merkleProof, merkleRoot, leaf), "Invalid Proof");
 
         //Mark address as having claimed the token
-        whitelistClaimed[msg.sender] = true;
+        allowlistClaimed[msg.sender] = true;
 
         mintsPerAddress[msg.sender] += _number;
 
