@@ -14,7 +14,7 @@ Other features:
 - Max-tokens-per-wallet and max-tokens-per-mint. Avoid that any single wallet hoards all your collection. This can be bypassed spunning new wallets, but its annoying and the minter has to pay gas fees repeatedly.
 - `````CallerIsUser```` modifier to only allow calls from EOA, not from other smart contracts. This is used to avoid certain exploits.
 - ````reveal()```` function to change the baseTokenUri and improve the fairness of minting.
-- ````withdraw()```` function. I said this is a minimal yet useful example. You dont want your funds to be locked in the smart contract forever, right? However, bear in mind that this only allows you to withdraw ETH, if any ERC20 is sent to the contract, it will be locked.
+- ````withdraw()```` function. This allows to withdraw all ETH from the contract to the Owner. 
 
 The Waffle tests include the allowlist functions, precomputing the root from the default addresses that Hardhat provides, as well as a gas report from [hardhat-gas-reporter](https://www.npmjs.com/package/hardhat-gas-reporter)
 
