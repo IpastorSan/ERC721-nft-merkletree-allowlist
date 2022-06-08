@@ -14,10 +14,9 @@ module.exports = {
     }
   },
   networks: {
-    rinkeby: {
+    goerli: {
       url: process.env.DEVELOPMENT_ALCHEMY_KEY,
       accounts: [process.env.PRIVATE_KEY_DEVELOPMENT],
-      gasMultiplier: 1.2,
     },
 
     mainnet:{
