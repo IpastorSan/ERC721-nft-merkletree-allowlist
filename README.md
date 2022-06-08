@@ -18,7 +18,7 @@ Other features:
 
 The Waffle tests include the allowlist functions, precomputing the root from the default addresses that Hardhat provides, as well as a gas report from [hardhat-gas-reporter](https://www.npmjs.com/package/hardhat-gas-reporter)
 
-![gasreport](https://github.com/IpastorSan/ERC721_NFT/blob/main/gas_report.png)
+![gasreport](https://github.com/IpastorSan/ERC721-nft-merkletree-allowlist/blob/master/gas-report.png)
 
 ## Useful commands to run the project 
 
