@@ -143,7 +143,7 @@ contract GomuGomuNoMi is ERC721, Ownable, ERC2981ContractRoyalties {
     /// @dev Sets token royalties
     /// @param recipient recipient of the royalties
     /// @param value percentage (using 2 decimals - 10000 = 100, 0 = 0)
-    function setRoyalties(address recipient, uint256 value) public {
+    function setRoyalties(address recipient, uint256 value) public onlyOwner{
         _setRoyalties(recipient, value);
     }
 
